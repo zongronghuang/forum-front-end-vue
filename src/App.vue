@@ -10,7 +10,7 @@
 <script>
 import "bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
-import Navbar from "../src/components/Navbar.vue";
+import Navbar from "./components/Navbar.vue";
 
 export default {
   name: "App",
