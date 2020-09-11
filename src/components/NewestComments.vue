@@ -8,7 +8,6 @@
         </h4>
         <p>{{comment.text}}</p>by
         <a href="#">{{comment.User.name}}</a>
-        <br />
         {{comment.createdAt | fromNow}}
         <hr />
       </div>

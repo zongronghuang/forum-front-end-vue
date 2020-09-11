@@ -2,9 +2,15 @@
   <div class="container py-5">
     <NavTabs />
     <h1 class="mt-5">最新動態</h1>
+    <hr />
     <div class="row">
-      <NewestRestaurants class="col" :restaurants="restaurants" />
-      <NewestComments class="col" :comments="comments" />
+      <div class="col-6">
+        <NewestRestaurants :restaurants="restaurants" />
+      </div>
+
+      <div class="col-6">
+        <NewestComments :comments="comments" />
+      </div>
     </div>
   </div>
 </template>
