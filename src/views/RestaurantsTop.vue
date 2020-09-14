@@ -8,6 +8,8 @@
 <script>
 import NavTabs from "../components/NavTabs.vue";
 
+
+
 export default {
   components: {
     NavTabs,
