@@ -16,18 +16,14 @@
 </template>
 
 <script>
-import moment from "moment";
+import { fromNowFilter } from "../utils/mixins.js";
 
 export default {
+  mixins: [fromNowFilter],
   props: {
     comments: {
       type: Array,
       required: false,
-    },
-  },
-  filters: {
-    fromNow(datetime) {
-      return moment(datetime).fromNow();
     },
   },
 };
