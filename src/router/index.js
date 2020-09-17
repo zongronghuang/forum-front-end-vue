@@ -44,6 +44,11 @@ const routes = [
     component: () => import('../views/Restaurant.vue')
   },
   {
+    path: '/admin/restaurants/:id/edit',
+    name: 'admin-restaurant-edit',
+    component: () => import('../views/AdminRestaurantEdit.vue')
+  },
+  {
     path: '/admin',
     exact: true,
     redirect: '/admin/restaurants'
@@ -60,7 +65,7 @@ const routes = [
   },
   {
     path: '/admin/restaurants/:id',
-    name: 'admin-restaurants',
+    name: 'admin-restaurant',
     component: () => import('../views/AdminRestaurant.vue')
   },
   {
