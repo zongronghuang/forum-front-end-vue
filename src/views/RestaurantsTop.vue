@@ -1179,7 +1179,7 @@ export default {
   },
   methods: {
     fetchRestaurants() {
-      this.restaurants = dummyData.restaurants;
+      this.restaurants = [...dummyData.restaurants];
     },
     addFavorite(restaurantId) {
       const index = this.restaurants.findIndex(

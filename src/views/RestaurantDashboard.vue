@@ -113,7 +113,7 @@ export default {
   },
   methods: {
     fetchRestaurant() {
-      this.restaurant = dummyData.restaurant;
+      this.restaurant = { ...dummyData.restaurant };
     },
   },
 };
