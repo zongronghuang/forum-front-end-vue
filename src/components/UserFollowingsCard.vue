@@ -19,3 +19,15 @@
     </div>
   </div>
 </template>
+
+<script>
+export default {
+  name: "UserFollowingsCard",
+  props: {
+    userFollowings: {
+      type: Array,
+      required: true,
+    },
+  },
+};
+</script>

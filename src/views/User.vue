@@ -7,13 +7,17 @@
         <div class="row">
           <div class="col-md-4">
             <!-- 追蹤者 -->
+            <UserFollowingsCard :user-followings="profile.Followings" />
             <br />
             <!-- 追隨者 -->
+            <UserFollowersCard :user-followers="profile.Followers" />
           </div>
           <div class="col-md-8">
             <!-- 評論的餐廳 -->
+            <UserCommentsCard :user-comments="profile.Comments" />
             <br />
             <!-- 收藏的餐廳 -->
+            <UserFavoritedRestaurantsCard :user-favorites="profile.FavoritedRestaurants" />
           </div>
         </div>
       </div>
@@ -23,6 +27,10 @@
 
 <script>
 import UserProfileCard from "../components/UserProfileCard.vue";
+import UserFollowingsCard from "../components/UserFollowingsCard";
+import UserFollowersCard from "../components/UserFollowersCard";
+import UserFavoritedRestaurantsCard from "../components/UserFavoritedRestaurantsCard";
+import UserCommentsCard from "../components/UserCommentsCard";
 
 const dummyUser = {
   currentUser: {
@@ -1304,6 +1312,10 @@ const dummyData = {
 export default {
   components: {
     UserProfileCard,
+    UserFollowersCard,
+    UserFollowingsCard,
+    UserFavoritedRestaurantsCard,
+    UserCommentsCard,
   },
   data() {
     return {
