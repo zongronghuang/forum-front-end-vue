@@ -24,26 +24,21 @@
           </ul>
           <p></p>
           <form action="/following/512?_method=DELETE" method="POST" style="display: contents;">
-            <button
+            <!-- <button
               type="submit"
               class="btn btn-primary"
               v-if="profile.id == currentViewingUser.id"
-            >編輯</button>
+            >編輯</button>-->
 
-            <div v-else>
-              <button
-                type="submit"
-                class="btn btn-danger"
-                v-if="profile.isFollowed"
-                @click.stop.prevent="unfollowUser"
-              >取消追蹤</button>
-              <button
-                type="submit"
-                class="btn btn-primary"
-                v-else
-                @click.stop.prevent="followUser"
-              >追蹤</button>
-            </div>
+            <!-- <div v-else> -->
+            <button
+              type="submit"
+              class="btn btn-danger"
+              v-if="profile.isFollowed"
+              @click.stop.prevent="unfollowUser"
+            >取消追蹤</button>
+            <button type="submit" class="btn btn-primary" v-else @click.stop.prevent="followUser">追蹤</button>
+            <!-- </div> -->
           </form>
           <p></p>
         </div>
@@ -95,7 +90,9 @@ export default {
         isFollowed: true,
       };
 
-      this.profile.Followers.push(this.currentViewingUser);
+      // this.profile.Followers.push({ ...this.currentViewingUser });
+
+      this.$emit("after-follow");
     },
     unfollowUser() {
       this.profile = {
@@ -103,9 +100,11 @@ export default {
         isFollowed: false,
       };
 
-      this.profile.Followers = this.profile.Followers.filter(
-        (follower) => follower.id !== this.currentViewingUser.id
-      );
+      // this.profile.Followers = this.profile.Followers.filter(
+      //   (follower) => follower.id !== this.currentViewingUser.id
+      // );
+
+      this.$emit("after-unfollow");
     },
   },
 };

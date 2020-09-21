@@ -3,7 +3,12 @@
     <div class="album py-5 bg-light">
       <div class="container">
         <!-- profile -->
-        <UserProfileCard :user-profile="profile" :current-user="currentUser" />
+        <UserProfileCard
+          :user-profile="profile"
+          :current-user="currentUser"
+          @after-follow="afterFollow"
+          @after-unfollow="afterUnfollow"
+        />
         <div class="row">
           <div class="col-md-4">
             <!-- 追蹤者 -->
@@ -1323,6 +1328,15 @@ export default {
       currentUser: dummyUser.currentUser,
     };
   },
+  watch: {
+    profile: {
+      handler: function () {
+        console.log("watch handler on");
+        return;
+      },
+      deep: true,
+    },
+  },
   created() {
     this.fetchProfile();
   },
@@ -1331,6 +1345,21 @@ export default {
       this.profile = {
         ...dummyData.profile,
       };
+    },
+    afterFollow() {
+      this.profile.Followers.push({ ...this.currentUser });
+      console.log("follower num add", this.profile.Followers.length);
+      console.log(this.profile.Followers);
+      console.log("after follow");
+    },
+    afterUnfollow() {
+      this.profile.Followers = this.profile.Followers.filter(
+        (follower) => follower.id !== this.currentUser.id
+      );
+
+      console.log("follower num delete", this.profile.Followers.length);
+      console.log(this.profile.Followers);
+      console.log("after unfollow");
     },
   },
 };

@@ -10,7 +10,7 @@
       @after-delete-comment="afterDeleteComment"
     />
     <!-- 新增評論 CreateComment -->
-    <CreateComment :restaurant-id="restaurantId" @after-create-comment="afterCreateComment" />
+    <CreateComment :restaurant-id="restaurant.id" @after-create-comment="afterCreateComment" />
   </div>
 </template>
 
