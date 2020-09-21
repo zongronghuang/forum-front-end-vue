@@ -26,11 +26,24 @@
           <form action="/following/512?_method=DELETE" method="POST" style="display: contents;">
             <button
               type="submit"
-              class="btn btn-danger"
-              v-if="profile.isFollowed"
-              @click.stop.prevent="unfollowUser"
-            >取消追蹤</button>
-            <button type="submit" class="btn btn-primary" v-else @click.stop.prevent="followUser">追蹤</button>
+              class="btn btn-primary"
+              v-if="profile.id == currentViewingUser.id"
+            >編輯</button>
+
+            <div v-else>
+              <button
+                type="submit"
+                class="btn btn-danger"
+                v-if="profile.isFollowed"
+                @click.stop.prevent="unfollowUser"
+              >取消追蹤</button>
+              <button
+                type="submit"
+                class="btn btn-primary"
+                v-else
+                @click.stop.prevent="followUser"
+              >追蹤</button>
+            </div>
           </form>
           <p></p>
         </div>
