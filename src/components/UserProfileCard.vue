@@ -83,7 +83,6 @@ export default {
       };
 
       this.profile.Followers.push(this.currentViewingUser);
-      // 加上 emit 去修改 followers 資料
     },
     unfollowUser() {
       this.profile = {
@@ -94,8 +93,6 @@ export default {
       this.profile.Followers = this.profile.Followers.filter(
         (follower) => follower.id !== this.currentViewingUser.id
       );
-
-      // 加上 emit 去修改 followers 資料
     },
   },
 };
