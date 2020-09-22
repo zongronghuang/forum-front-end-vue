@@ -23,22 +23,28 @@
             </li>
           </ul>
           <p></p>
-          <form action="/following/512?_method=DELETE" method="POST" style="display: contents;">
-            <!-- <button
+          <form action method="GET" style="display: contents;">
+            <router-link
+              :to="`/users/${profile.id}/edit`"
               type="submit"
               class="btn btn-primary"
-              v-if="profile.id == currentViewingUser.id"
-            >編輯</button>-->
+              v-if="profile.id === currentViewingUser.id"
+            >編輯</router-link>
 
-            <!-- <div v-else> -->
-            <button
-              type="submit"
-              class="btn btn-danger"
-              v-if="profile.isFollowed"
-              @click.stop.prevent="unfollowUser"
-            >取消追蹤</button>
-            <button type="submit" class="btn btn-primary" v-else @click.stop.prevent="followUser">追蹤</button>
-            <!-- </div> -->
+            <div v-else>
+              <button
+                type="submit"
+                class="btn btn-danger"
+                v-if="profile.isFollowed"
+                @click.stop.prevent="unfollowUser"
+              >取消追蹤</button>
+              <button
+                type="submit"
+                class="btn btn-primary"
+                v-else
+                @click.stop.prevent="followUser"
+              >追蹤</button>
+            </div>
           </form>
           <p></p>
         </div>

@@ -1,12 +1,13 @@
 <template>
   <div class="container py-5">
-    <form @submit.stop.prevent="handleFileChange">
+    <form @submit.prevent.stop="handleSubmit">
       <div class="form-group">
         <label for="name">Name</label>
         <input
           id="name"
           type="text"
           name="name"
+          v-model="user.name"
           class="form-control"
           placeholder="Enter Name"
           required
@@ -15,10 +16,17 @@
 
       <div class="form-group">
         <label for="image">Image</label>
-        <div>
-          <img :src="user.image" width="300" />
+        <div class="mb-3">
+          <img v-if="user.image" :src="user.image" width="300" />
         </div>
-        <input id="image" type="file" name="image" accept="image/*" class="form-control-file" />
+        <input
+          id="image"
+          type="file"
+          name="image"
+          accept="image/*"
+          class="form-control-file"
+          @change="handleFileChange"
+        />
       </div>
 
       <button type="submit" class="btn btn-primary">Submit</button>
@@ -53,14 +61,23 @@ export default {
       this.user = { ...dummyUser.currentUser };
     },
     handleFileChange(e) {
+      const { files } = e.target;
+
+      if (files.length === 0) {
+        this.user.image = "";
+      } else {
+        const imageURL = window.URL.createObjectURL(files[0]);
+
+        this.user.image = imageURL;
+      }
+    },
+    handleSubmit(e) {
       const form = e.target;
       const formData = new FormData(form);
 
       for (let [name, value] of formData.entries()) {
-        console.log("name", name, "value", value);
+        console.log(name, value);
       }
-
-      // 發送 after-submit 事件
     },
   },
 };
