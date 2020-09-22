@@ -1328,15 +1328,6 @@ export default {
       currentUser: dummyUser.currentUser,
     };
   },
-  watch: {
-    profile: {
-      handler: function () {
-        console.log("watch handler on");
-        return;
-      },
-      deep: true,
-    },
-  },
   created() {
     this.fetchProfile();
   },
@@ -1348,18 +1339,11 @@ export default {
     },
     afterFollow() {
       this.profile.Followers.push({ ...this.currentUser });
-      console.log("follower num add", this.profile.Followers.length);
-      console.log(this.profile.Followers);
-      console.log("after follow");
     },
     afterUnfollow() {
       this.profile.Followers = this.profile.Followers.filter(
         (follower) => follower.id !== this.currentUser.id
       );
-
-      console.log("follower num delete", this.profile.Followers.length);
-      console.log(this.profile.Followers);
-      console.log("after unfollow");
     },
   },
 };

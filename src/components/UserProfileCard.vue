@@ -16,10 +16,10 @@
               <strong>{{profile.FavoritedRestaurants.length}}</strong> 收藏的餐廳
             </li>
             <li>
-              <strong>{{profile.Followings.length}}</strong> followings (追蹤者)
+              <strong>{{userProfile.Followings.length}}</strong> followings (追蹤者)
             </li>
             <li>
-              <strong>{{profile.Followers.length}}</strong> followers (追隨者)
+              <strong>{{userProfile.Followers.length}}</strong> followers (追隨者)
             </li>
           </ul>
           <p></p>
@@ -90,8 +90,6 @@ export default {
         isFollowed: true,
       };
 
-      // this.profile.Followers.push({ ...this.currentViewingUser });
-
       this.$emit("after-follow");
     },
     unfollowUser() {
@@ -99,10 +97,6 @@ export default {
         ...this.profile,
         isFollowed: false,
       };
-
-      // this.profile.Followers = this.profile.Followers.filter(
-      //   (follower) => follower.id !== this.currentViewingUser.id
-      // );
 
       this.$emit("after-unfollow");
     },
