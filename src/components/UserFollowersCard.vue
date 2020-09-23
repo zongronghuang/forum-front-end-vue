@@ -4,7 +4,11 @@
       <strong>{{userFollowers.length}}</strong> followers (追隨者)
     </div>
     <div class="card-body">
-      <router-link :to="'/users/'+follower.id" v-for="follower in userFollowers" :key="follower.id">
+      <router-link
+        :to="{name: 'user', params: {id: follower.id}}"
+        v-for="follower in userFollowers"
+        :key="follower.id"
+      >
         <img :src="follower.image" width="60" height="60" class="avatar" />
       </router-link>
     </div>

@@ -5,7 +5,7 @@
     </div>
     <div class="card-body">
       <router-link
-        :to="'/restaurants/'+favorite.id"
+        :to=" {name: 'restaurant', params: {id: favorite.id}}"
         v-for="favorite in favorites"
         :key="favorite.id"
       >

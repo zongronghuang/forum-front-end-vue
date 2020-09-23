@@ -5,7 +5,7 @@
     </div>
     <div class="card-body">
       <router-link
-        :to="'/restaurants/'+comment.Restaurant.id"
+        :to="{name: 'restaurant', params: {id: comment.Restaurant.id}} "
         v-for="comment in comments"
         :key="comment.id"
       >

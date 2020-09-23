@@ -25,7 +25,7 @@
           <p></p>
           <form action method="GET" style="display: contents;">
             <router-link
-              :to="`/users/${profile.id}/edit`"
+              :to="{name: 'user-edit', params: {id: profile.id}}"
               type="submit"
               class="btn btn-primary"
               v-if="profile.id === currentViewingUser.id"
