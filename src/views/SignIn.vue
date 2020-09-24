@@ -34,7 +34,11 @@
         />
       </div>
 
-      <button class="btn btn-lg btn-primary btn-block mb-3" type="submit">Submit</button>
+      <button
+        class="btn btn-lg btn-primary btn-block mb-3"
+        type="submit"
+        :disabled="isProcessing"
+      >Submit</button>
 
       <div class="text-center mb-3">
         <p>
@@ -49,20 +53,77 @@
 
 
 <script>
+import authorizationAPI from "../apis/authorization.js";
+import { Toast } from "../utils/helpers.js";
+
 export default {
   data() {
     return {
       email: "",
       password: "",
+      isProcessing: false,
     };
   },
   methods: {
-    handleSubmit() {
-      const data = JSON.stringify({
-        email: this.email,
-        password: this.password,
-      });
-      console.log("data", data);
+    handleSubmit: async function () {
+      try {
+        if (!this.email || !this.password) {
+          return Toast.fire({
+            icon: "warning",
+            title: "請輸入帳密",
+          });
+        }
+
+        this.isProcessing = true;
+
+        const { data } = await authorizationAPI.signIn({
+          email: this.email,
+          password: this.password,
+        });
+
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+
+        localStorage.setItem("token", data.token);
+        this.$router.push("/restaurants");
+      } catch (error) {
+        this.password = "";
+        Toast.fire({
+          icon: "warning",
+          title: "帳密必須正確",
+        });
+
+        this.isProcessing = false;
+
+        console.log("error", error);
+      }
+
+      // authorizationAPI
+      //   .signIn({
+      //     email: this.email,
+      //     password: this.password,
+      //   })
+      //   .then((response) => {
+      //     const { data } = response;
+
+      //     if (data.status !== "success") {
+      //       throw new Error(data.message);
+      //     }
+
+      //     localStorage.setItem("token", data.token);
+      //     this.$router.push("/restaurants");
+      //   })
+      //   .catch((error) => {
+      //     this.password = "";
+      //     Toast.fire({
+      //       icon: "warning",
+      //       title: "帳密必須正確",
+      //     });
+
+      //     this.isProcessing = false;
+      //     console.log("error", error);
+      //   });
     },
   },
 };
