@@ -38,7 +38,9 @@
         class="btn btn-lg btn-primary btn-block mb-3"
         type="submit"
         :disabled="isProcessing"
-      >Submit</button>
+      >
+        Submit
+      </button>
 
       <div class="text-center mb-3">
         <p>
@@ -65,7 +67,7 @@ export default {
     };
   },
   methods: {
-    handleSubmit: async function () {
+    async handleSubmit() {
       try {
         if (!this.email || !this.password) {
           return Toast.fire({
@@ -98,32 +100,6 @@ export default {
 
         console.log("error", error);
       }
-
-      // authorizationAPI
-      //   .signIn({
-      //     email: this.email,
-      //     password: this.password,
-      //   })
-      //   .then((response) => {
-      //     const { data } = response;
-
-      //     if (data.status !== "success") {
-      //       throw new Error(data.message);
-      //     }
-
-      //     localStorage.setItem("token", data.token);
-      //     this.$router.push("/restaurants");
-      //   })
-      //   .catch((error) => {
-      //     this.password = "";
-      //     Toast.fire({
-      //       icon: "warning",
-      //       title: "帳密必須正確",
-      //     });
-
-      //     this.isProcessing = false;
-      //     console.log("error", error);
-      //   });
     },
   },
 };
