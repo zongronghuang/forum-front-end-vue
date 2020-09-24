@@ -17,8 +17,20 @@
           <td>{{user.email}}</td>
           <td>{{user.isAdmin ? 'admin' : 'user'}}</td>
           <td>
-            <button type="button" class="btn btn-link" v-if="user.isAdmin">set as user</button>
-            <button type="button" class="btn btn-link" v-else>set as admin</button>
+            <div v-if="user.id !== currentUser.id">
+              <button
+                type="button"
+                class="btn btn-link"
+                v-if="user.isAdmin"
+                @click.stop.prevent="toggleUserRole(user.id)"
+              >Set as user</button>
+              <button
+                type="button"
+                class="btn btn-link"
+                v-else
+                @click.stop.prevent="toggleUserRole(user.id)"
+              >Set as admin</button>
+            </div>
           </td>
         </tr>
       </tbody>
@@ -826,6 +838,18 @@ export default {
     },
     fetchCurrentUser() {
       this.currentUser = dummyUser.currentUser;
+    },
+    toggleUserRole(userId) {
+      this.users = this.users.map((user) => {
+        if (user.id === userId) {
+          return (user = {
+            ...user,
+            isAdmin: !user.isAdmin,
+          });
+        }
+
+        return user;
+      });
     },
   },
 };
