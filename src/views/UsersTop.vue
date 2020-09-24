@@ -6,11 +6,7 @@
     <div class="row text-center">
       <div class="col-3" v-for="user in users" :key="user.id">
         <a href="#">
-          <img
-            :src="user.image || 'http://via.placeholder.com/300x300?text=No+Image'"
-            width="140px"
-            height="140px"
-          />
+          <img :src="user.image | emptyImage" width="140px" height="140px" />
         </a>
         <h2>{{user.name}}</h2>
         <span class="badge badge-secondary">追蹤人數：{{user.FollowerCount}}</span>
@@ -34,6 +30,7 @@
 </template>
 
 <script>
+import { emptyImageFilter } from "../utils/mixins.js";
 import NavTabs from "../components/NavTabs.vue";
 
 const dummyData = {
@@ -1827,6 +1824,7 @@ const dummyData = {
 
 export default {
   name: "users-top",
+  mixins: [emptyImageFilter],
   components: {
     NavTabs,
   },

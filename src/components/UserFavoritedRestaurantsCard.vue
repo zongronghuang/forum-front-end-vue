@@ -9,15 +9,18 @@
         v-for="favorite in favorites"
         :key="favorite.id"
       >
-        <img :src="favorite.image" width="60" height="60" class="avatar" />
+        <img :src="favorite.image | emptyImage" width="60" height="60" class="avatar" />
       </router-link>
     </div>
   </div>
 </template>
 
 <script>
+import { emptyImageFilter } from "../utils/mixins.js";
+
 export default {
   name: "UserFavoritedRestaurantsCard",
+  mixins: [emptyImageFilter],
   props: {
     userFavorites: {
       type: Array,

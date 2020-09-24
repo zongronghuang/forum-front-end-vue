@@ -17,7 +17,7 @@
       <div class="form-group">
         <label for="image">Image</label>
         <div class="mb-3">
-          <img v-if="user.image" :src="user.image" width="300" />
+          <img v-if="user.image" :src="user.image | emptyImage" width="300" />
         </div>
         <input
           id="image"
@@ -35,6 +35,8 @@
 </template>
 
 <script>
+import { emptyImageFilter } from "../utils/mixins.js";
+
 const dummyUser = {
   currentUser: {
     id: 1,
@@ -48,6 +50,7 @@ const dummyUser = {
 
 export default {
   name: "user-edit",
+  mixins: [emptyImageFilter],
   data() {
     return {
       user: {},

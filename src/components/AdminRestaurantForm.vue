@@ -81,7 +81,7 @@
       <label for="image">Image</label>
       <img
         v-if="restaurant.image"
-        :src="restaurant.image"
+        :src="restaurant.image | emptyImage"
         class="d-block img-thumbnail mb-3"
         width="200"
         height="200"
@@ -102,6 +102,8 @@
 </template>
 
 <script>
+import { emptyImageFilter } from "../utils/mixins.js";
+
 const dummyData = {
   categories: [
     {
@@ -132,6 +134,7 @@ const dummyData = {
 };
 
 export default {
+  mixins: [emptyImageFilter],
   data() {
     return {
       restaurant: {
