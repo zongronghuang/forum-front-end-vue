@@ -5,11 +5,11 @@
     <hr />
     <div class="row">
       <div class="col-6">
-        <NewestRestaurants :restaurants="restaurants" />
+        <NewestRestaurants :new-restaurants="restaurants" />
       </div>
 
       <div class="col-6">
-        <NewestComments :comments="comments" />
+        <NewestComments :new-comments="comments" />
       </div>
     </div>
   </div>
@@ -20,6 +20,7 @@ import NavTabs from "../components/NavTabs.vue";
 import NewestRestaurants from "../components/NewestRestaurants.vue";
 import NewestComments from "../components/NewestComments.vue";
 import restaurantsAPI from "../apis/restaurants.js";
+import { Toast } from "../utils/helpers.js";
 
 export default {
   name: "RestaurantsFeeds",
@@ -40,14 +41,23 @@ export default {
   methods: {
     async fetchFeeds() {
       try {
-        const response = await restaurantsAPI.getNewRestaurants();
-        console.log("response", response);
+        const response = await restaurantsAPI.getFeeds();
         const { restaurants, comments } = response.data;
+        const { status, statusText } = response;
+
+        if (statusText !== "OK") {
+          throw new Error(`${status}: ${statusText}`);
+        }
 
         this.restaurants = restaurants;
         this.comments = comments;
       } catch (error) {
         console.log("error", error);
+
+        Toast.fire({
+          icon: "error",
+          title: `發生錯誤：${error}`,
+        });
       }
     },
   },
