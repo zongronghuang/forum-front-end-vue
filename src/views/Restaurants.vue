@@ -2,19 +2,21 @@
   <div class="container py-5">
     <NavTabs />
     <h1 class="mt-5">首頁 - 餐廳列表</h1>
+
     <RestaurantsNavPills :categories="categories" />
     <RestaurantCard
       v-for="restaurant in restaurants"
       :key="restaurant.id"
       :initial-restaurant="restaurant"
     />
+
     <RestaurantsPagination
-      v-if="totalPage > 1"
-      :currentPage="currentPage"
+      v-if="totalPage.length > 1"
+      :current-page="currentPage"
       :total-page="totalPage"
       :category-id="categoryId"
-      :previous-page="previousPage"
-      :next-page="nextPage"
+      :previous-page="prev"
+      :next-page="next"
     />
   </div>
 </template>
@@ -41,16 +43,24 @@ export default {
       categoryId: -1,
       currentPage: 1,
       restaurants: [],
-      totalPage: -1,
+      totalPage: [],
       prev: -1,
       next: -1,
     };
   },
   created() {
+    const { page = "", categoryId = "" } = this.$route.query;
+    console.log("page", page, "categoryId", categoryId);
     this.fetchRestaurants({
-      page: 1,
-      categoryId: "",
+      queryPage: page,
+      queryCategoryId: categoryId,
     });
+  },
+  beforeRouteUpdate(to, from, next) {
+    const { page = "", categoryId = "" } = to.query;
+    console.log("BRU page", page, "BRU categoryId", categoryId);
+    this.fetchRestaurants({ queryPage: page, queryCategoryId: categoryId });
+    next();
   },
   methods: {
     async fetchRestaurants({ queryPage, queryCategoryId }) {
