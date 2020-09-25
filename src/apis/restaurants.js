@@ -9,5 +9,15 @@ export default {
     return apiHelper.get(`/restaurants?${searchParams.toString()}`, {
       headers: { Authorization: `Bearer ${getToken()}` }
     })
+  },
+
+  getNewRestaurants() {
+    return apiHelper.get('/restaurants/feeds', {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    })
+  },
+
+  getNewCommentedRestaurants() {
+
   }
 }
