@@ -127,6 +127,14 @@ export default {
       isLoading: true,
     };
   },
+  watch: {
+    initialRestaurant(newValue) {
+      this.restaurant = {
+        ...this.restaurant,
+        ...newValue,
+      };
+    },
+  },
   props: {
     initialRestaurant: {
       type: Object,

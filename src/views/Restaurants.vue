@@ -50,7 +50,6 @@ export default {
   },
   created() {
     const { page = "", categoryId = "" } = this.$route.query;
-    console.log("page", page, "categoryId", categoryId);
     this.fetchRestaurants({
       queryPage: page,
       queryCategoryId: categoryId,
@@ -58,7 +57,6 @@ export default {
   },
   beforeRouteUpdate(to, from, next) {
     const { page = "", categoryId = "" } = to.query;
-    console.log("BRU page", page, "BRU categoryId", categoryId);
     this.fetchRestaurants({ queryPage: page, queryCategoryId: categoryId });
     next();
   },
@@ -91,8 +89,6 @@ export default {
         this.totalPage = totalPage;
         this.prev = prev;
         this.next = next;
-
-        console.log("response", response);
       } catch (error) {
         console.log("error", error);
 
