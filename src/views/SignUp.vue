@@ -62,7 +62,13 @@
         />
       </div>
 
-      <button class="btn btn-lg btn-primary btn-block mb-3" type="submit">Submit</button>
+      <button
+        class="btn btn-lg btn-primary btn-block mb-3"
+        type="submit"
+        :disabled="isProcessing"
+      >
+        {{ isProcessing ? "處理中" : "Submit" }}
+      </button>
 
       <div class="text-center mb-3">
         <p>
@@ -76,6 +82,9 @@
 </template>
 
 <script>
+import authorizationAPI from "../apis/authorization.js";
+import { Toast } from "../utils/helpers.js";
+
 export default {
   data() {
     return {
@@ -83,18 +92,46 @@ export default {
       email: "",
       password: "",
       passwordCheck: "",
+      isProcessing: false,
     };
   },
   methods: {
-    handleSubmit() {
-      const data = JSON.stringify({
-        name: this.name,
-        email: this.email,
-        password: this.password,
-        passwordCheck: this.passwordCheck,
-      });
+    async handleSubmit() {
+      try {
+        this.isProcessing = true;
 
-      console.log("data", data);
+        if (!this.name.trim() || !this.email.trim() || !this.password.trim()) {
+          throw new Error("名稱、電子郵件和密碼必填，而且不能為空白");
+        }
+
+        if (this.password.trim() !== this.passwordCheck.trim()) {
+          throw new Error("密碼不一致");
+        }
+
+        const { data } = await authorizationAPI.signUp({
+          name: this.name,
+          email: this.email,
+          password: this.password,
+          passwordCheck: this.passwordCheck,
+        });
+
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+
+        this.$router.push({ name: "sign-in" });
+      } catch (error) {
+        this.isProcessing = false;
+        this.password = "";
+        this.passwordCheck = "";
+
+        console.log("error", error);
+
+        Toast.fire({
+          icon: "error",
+          title: `${error}`,
+        });
+      }
     },
   },
 };
