@@ -6,10 +6,21 @@
     <form class="my-4">
       <div class="form-row">
         <div class="col-auto">
-          <input type="text" class="form-control" placeholder="新增餐廳類別..." v-model="newCategoryName" />
+          <input
+            type="text"
+            class="form-control"
+            placeholder="新增餐廳類別..."
+            v-model="newCategoryName"
+          />
         </div>
         <div class="col-auto">
-          <button type="button" class="btn btn-primary" @click.stop.prevent="createCategory">新增</button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            @click.stop.prevent="createCategory"
+          >
+            新增
+          </button>
         </div>
       </div>
     </form>
@@ -25,14 +36,21 @@
         <tr v-for="category in categories" :key="category.id">
           <th scope="row">{{ category.id }}</th>
           <td class="position-relative">
-            <div class="category-name" v-show="!category.isEditing">{{ category.name }}</div>
+            <div class="category-name" v-show="!category.isEditing">
+              {{ category.name }}
+            </div>
             <input
               v-show="category.isEditing"
               v-model="category.name"
               type="text"
               class="form-control"
             />
-            <span v-show="category.isEditing" class="cancel" @click="handleCancel(category.id)">✕</span>
+            <span
+              v-show="category.isEditing"
+              class="cancel"
+              @click="handleCancel(category.id)"
+              >✕</span
+            >
           </td>
           <td class="d-flex justify-content-between">
             <button
@@ -40,18 +58,26 @@
               class="btn btn-link mr-2"
               v-show="!category.isEditing"
               @click.stop.prevent="toggleIsEditing(category.id)"
-            >Edit</button>
+            >
+              Edit
+            </button>
             <button
               v-show="category.isEditing"
               type="button"
               class="btn btn-link mr-2"
-              @click.prevent.stop="updateCategory({categoryId: category.id, name: category.name})"
-            >Save</button>
+              @click.prevent.stop="
+                updateCategory({ categoryId: category.id, name: category.name })
+              "
+            >
+              Save
+            </button>
             <button
               type="button"
               class="btn btn-link mr-2"
               @click.prevent.stop="deleteCategory(category.id)"
-            >Delete</button>
+            >
+              Delete
+            </button>
           </td>
         </tr>
       </tbody>
@@ -61,36 +87,8 @@
 
 <script>
 import AdminNav from "@/components/AdminNav";
-import { v4 as uuidv4 } from "uuid";
-
-const dummyData = {
-  categories: [
-    {
-      id: 1,
-      name: "中式料理",
-      createdAt: "2019-06-22T09:00:43.000Z",
-      updatedAt: "2019-06-22T09:00:43.000Z",
-    },
-    {
-      id: 2,
-      name: "日本料理",
-      createdAt: "2019-06-22T09:00:43.000Z",
-      updatedAt: "2019-06-22T09:00:43.000Z",
-    },
-    {
-      id: 3,
-      name: "義大利料理",
-      createdAt: "2019-06-22T09:00:43.000Z",
-      updatedAt: "2019-06-22T09:00:43.000Z",
-    },
-    {
-      id: 4,
-      name: "墨西哥料理",
-      createdAt: "2019-06-22T09:00:43.000Z",
-      updatedAt: "2019-06-22T09:00:43.000Z",
-    },
-  ],
-};
+import adminAPI from "../apis/admin.js";
+import { Toast } from "../utils/helpers.js";
 
 export default {
   name: "AdminCategories",
@@ -107,16 +105,26 @@ export default {
     this.fetchCategories();
   },
   methods: {
-    fetchCategories() {
-      this.categories = dummyData.categories.map((category) => ({
-        ...category,
-        isEditing: false,
-        nameCached: "",
-      }));
+    async fetchCategories() {
+      try {
+        const { data } = await adminAPI.categories.get();
+
+        this.categories = data.categories.map((category) => ({
+          ...category,
+          isEditing: false,
+          nameCached: "",
+        }));
+      } catch (error) {
+        console.log("error", error);
+
+        Toast.fire({
+          icon: "error",
+          title: "無法取回類別資料",
+        });
+      }
     },
     createCategory() {
       this.categories.push({
-        id: uuidv4(),
         name: this.newCategoryName,
       });
 
