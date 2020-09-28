@@ -67,20 +67,20 @@ export default {
     const { id: restaurantId } = this.$route.params;
     this.fetchRestaurant(restaurantId);
   },
+  beforeRouteUpdate(to, from, next) {
+    const { id } = to.params;
+    this.fetchRestaurant(id);
+    next();
+  },
   methods: {
     async fetchRestaurant(restaurantId) {
       try {
-        const { data } = await adminAPI.restaurants.get();
-        console.log("data ", data);
-
-        const fetchedData = data.restaurants.find(
-          (restaurant) => restaurant.id === Number(restaurantId)
-        );
+        const { data } = await adminAPI.restaurants.getDetail({ restaurantId });
 
         this.restaurant = {
-          ...fetchedData,
-          openingHours: fetchedData.opening_hours,
-          categoryName: fetchedData.Category.name,
+          ...data.restaurant,
+          openingHours: data.restaurant.opening_hours,
+          categoryName: data.restaurant.Category.name,
         };
       } catch (error) {
         console.log("error", error);
