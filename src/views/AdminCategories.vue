@@ -125,7 +125,6 @@ export default {
         });
       }
     },
-    // not API-tested /////////////////////////
     async createCategory() {
       try {
         this.isProcessing = true;
@@ -150,6 +149,7 @@ export default {
         this.categories.push({
           name: this.newCategoryName,
           id: data.categoryId,
+          isEditing: false,
         });
 
         if (data.status !== "success") {
@@ -169,16 +169,21 @@ export default {
     },
     async deleteCategory(categoryId) {
       try {
-        const { data } = adminAPI.categories.delete({ categoryId });
+        const { data } = await adminAPI.categories.delete({ categoryId });
 
         if (data.status !== "success") {
           throw new Error(data.message);
         }
+
+        this.categories = this.categories.filter(
+          (category) => category.id !== categoryId
+        );
       } catch (error) {
         console.log("error", error);
+
         Toast.fire({
           icon: "error",
-          title: `無法刪除餐廳類別: ${error}`,
+          title: `無法刪除餐廳類別`,
         });
       }
     },
@@ -195,8 +200,25 @@ export default {
         return category;
       });
     },
-    updateCategory({ categoryId }) {
-      this.toggleIsEditing(categoryId);
+    async updateCategory({ categoryId, name }) {
+      try {
+        const { data } = await adminAPI.categories.update({ categoryId, name });
+
+        console.log("update data", data);
+
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+
+        this.toggleIsEditing(categoryId);
+      } catch (error) {
+        console.log("error", error);
+
+        Toast.fire({
+          icon: "error",
+          title: `無法更新類別資訊`,
+        });
+      }
     },
     handleCancel(categoryId) {
       this.categories = this.categories.map((category) => {
