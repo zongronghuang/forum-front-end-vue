@@ -8,8 +8,8 @@ export default {
         headers: { Authorization: `Bearer ${getToken()}` }
       })
     },
-    create({ formData }) {
-      return apiHelper.post('/admin/categories', formData, {
+    create({ name }) {
+      return apiHelper.post('/admin/categories', { name }, {
         headers: { Authorization: `Bearer ${getToken()}` }
       })
     },

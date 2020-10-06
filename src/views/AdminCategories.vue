@@ -3,22 +3,19 @@
     <!-- 1. 使用先前寫好的 AdminNav -->
     <AdminNav />
 
-    <form class="my-4">
+    <form class="my-4" @submit.stop.prevent="createCategory">
       <div class="form-row">
         <div class="col-auto">
           <input
             type="text"
+            name="name"
             class="form-control"
             placeholder="新增餐廳類別..."
             v-model="newCategoryName"
           />
         </div>
         <div class="col-auto">
-          <button
-            type="button"
-            class="btn btn-primary"
-            @click.stop.prevent="createCategory"
-          >
+          <button type="submit" class="btn btn-primary" :diabled="isProcessing">
             新增
           </button>
         </div>
@@ -66,7 +63,10 @@
               type="button"
               class="btn btn-link mr-2"
               @click.prevent.stop="
-                updateCategory({ categoryId: category.id, name: category.name })
+                updateCategory({
+                  categoryId: category.id,
+                  name: category.name,
+                })
               "
             >
               Save
@@ -99,6 +99,7 @@ export default {
     return {
       newCategoryName: "",
       categories: [],
+      isProcessing: false,
     };
   },
   created() {
@@ -109,6 +110,7 @@ export default {
       try {
         const { data } = await adminAPI.categories.get();
 
+        console.log("category data", data);
         this.categories = data.categories.map((category) => ({
           ...category,
           isEditing: false,
@@ -123,17 +125,62 @@ export default {
         });
       }
     },
-    createCategory() {
-      this.categories.push({
-        name: this.newCategoryName,
-      });
+    // not API-tested /////////////////////////
+    async createCategory() {
+      try {
+        this.isProcessing = true;
 
-      this.newCategoryName = "";
+        if (!this.newCategoryName.trim()) {
+          throw new Error("餐廳名稱不可為空白");
+        }
+
+        if (
+          this.categories.some(
+            (category) => category.name === this.newCategoryName
+          )
+        ) {
+          throw new Error("無法新增，此餐廳已存在");
+        }
+
+        // data 內含有 categoryId
+        const { data } = await adminAPI.categories.create({
+          name: this.newCategoryName,
+        });
+
+        this.categories.push({
+          name: this.newCategoryName,
+          id: data.categoryId,
+        });
+
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+
+        this.newCategoryName = "";
+        this.isProcessing = false;
+      } catch (error) {
+        this.isProcessing = false;
+        console.log("error", error);
+        Toast.fire({
+          icon: "error",
+          title: `${error}`,
+        });
+      }
     },
-    deleteCategory(categoryId) {
-      this.categories = this.categories.filter(
-        (category) => category.id !== categoryId
-      );
+    async deleteCategory(categoryId) {
+      try {
+        const { data } = adminAPI.categories.delete({ categoryId });
+
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+      } catch (error) {
+        console.log("error", error);
+        Toast.fire({
+          icon: "error",
+          title: `無法刪除餐廳類別: ${error}`,
+        });
+      }
     },
     toggleIsEditing(categoryId) {
       this.categories = this.categories.map((category) => {
