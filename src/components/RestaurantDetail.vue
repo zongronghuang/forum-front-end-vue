@@ -184,10 +184,6 @@ export default {
           title: "無法移除餐廳的讚，稍後再試",
         });
       }
-      this.restaurant = {
-        ...this.restaurant,
-        isLiked: false,
-      };
     },
   },
 };
