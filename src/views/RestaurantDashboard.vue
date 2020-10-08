@@ -35,6 +35,11 @@ export default {
     const restaurantId = this.$route.params.id;
     this.fetchRestaurant(restaurantId);
   },
+  beforeRouteUpdate(to, from, next) {
+    const restaurantId = to.params.id;
+    this.fetchRestaurant(restaurantId);
+    next();
+  },
   methods: {
     async fetchRestaurant(restaurantId) {
       try {
