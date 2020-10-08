@@ -5,14 +5,18 @@
       <textarea class="form-control" rows="3" name="text" v-model="text" />
     </div>
     <div class="d-flex align-items-center justify-content-between">
-      <button type="button" class="btn btn-link" @click="$router.back()">回上一頁</button>
+      <button type="button" class="btn btn-link" @click="$router.back()">
+        回上一頁
+      </button>
       <button type="submit" class="btn btn-primary mr-0">Submit</button>
     </div>
   </form>
 </template>
 
 <script>
-import { v4 as uuidv4 } from "uuid";
+import commentsAPI from "../apis/comments.js";
+import { Toast } from "../utils/helpers.js";
+import { mapState } from "vuex";
 
 export default {
   name: "CreateComment",
@@ -27,17 +31,50 @@ export default {
       required: true,
     },
   },
+  computed: {
+    ...mapState(["currentUser"]),
+  },
   methods: {
-    handleSubmit() {
-      console.log("handle submit");
+    async handleSubmit() {
+      try {
+        if (!this.text.trim()) {
+          return Toast.fire({
+            icon: "error",
+            title: "無法送出空白評論",
+          });
+        }
 
-      this.$emit("after-create-comment", {
-        commentId: uuidv4(),
-        restaurantId: this.restaurantId,
-        text: this.text,
-      });
+        const commentObj = {
+          text: this.text,
+          restaurantId: this.restaurantId,
+        };
+        console.log("comment obj", commentObj);
 
-      this.text = "";
+        const response = await commentsAPI.create(commentObj);
+        console.log("comment response", response);
+
+        const { data } = response;
+
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+
+        console.log("handle submit");
+
+        this.$emit("after-create-comment", {
+          commentId: data.commentId,
+          restaurantId: this.restaurantId,
+          text: this.text,
+        });
+
+        this.text = "";
+      } catch (error) {
+        console.log("error", error);
+        Toast.fire({
+          icon: "error",
+          title: "無法新增評論，稍後再試",
+        });
+      }
     },
   },
 };
