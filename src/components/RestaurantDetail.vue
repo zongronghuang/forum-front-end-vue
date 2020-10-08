@@ -71,6 +71,8 @@
 
 <script>
 import { emptyImageFilter } from "../utils/mixins.js";
+import { Toast } from "../utils/helpers.js";
+import usersAPI from "../apis/users.js";
 
 export default {
   name: "RestaurantDetail",
@@ -95,17 +97,51 @@ export default {
     },
   },
   methods: {
-    addFavorite() {
-      this.restaurant = {
-        ...this.restaurant,
-        isFavorited: true,
-      };
+    async addFavorite() {
+      try {
+        const { data } = await usersAPI.addFavorite({
+          restaurantId: this.restaurant.id,
+        });
+        console.log("add fav data", data);
+
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+
+        this.restaurant = {
+          ...this.restaurant,
+          isFavorited: true,
+        };
+      } catch (error) {
+        console.log("error", error);
+        Toast.fire({
+          icon: "error",
+          title: "無法將餐廳加入最愛，稍後再試",
+        });
+      }
     },
-    deleteFavorite() {
-      this.restaurant = {
-        ...this.restaurant,
-        isFavorited: false,
-      };
+    async deleteFavorite() {
+      try {
+        const { data } = await usersAPI.deleteFavorite({
+          restaurantId: this.restaurant.id,
+        });
+        console.log("delete fav data", data);
+
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+
+        this.restaurant = {
+          ...this.restaurant,
+          isFavorited: false,
+        };
+      } catch (error) {
+        console.log("error", error);
+        Toast.fire({
+          icon: "error",
+          title: "無法將餐廳移除最愛，稍後再試",
+        });
+      }
     },
     addLike() {
       this.restaurant = {
