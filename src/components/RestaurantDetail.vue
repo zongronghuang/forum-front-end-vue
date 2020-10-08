@@ -102,7 +102,6 @@ export default {
         const { data } = await usersAPI.addFavorite({
           restaurantId: this.restaurant.id,
         });
-        console.log("add fav data", data);
 
         if (data.status !== "success") {
           throw new Error(data.message);
@@ -125,7 +124,6 @@ export default {
         const { data } = await usersAPI.deleteFavorite({
           restaurantId: this.restaurant.id,
         });
-        console.log("delete fav data", data);
 
         if (data.status !== "success") {
           throw new Error(data.message);
@@ -143,13 +141,49 @@ export default {
         });
       }
     },
-    addLike() {
-      this.restaurant = {
-        ...this.restaurant,
-        isLiked: true,
-      };
+    async addLike() {
+      try {
+        const { data } = await usersAPI.addLike({
+          restaurantId: this.restaurant.id,
+        });
+
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+
+        this.restaurant = {
+          ...this.restaurant,
+          isLiked: true,
+        };
+      } catch (error) {
+        console.log("error", error);
+        Toast.fire({
+          icon: "error",
+          title: "無法為餐廳按讚，稍後再試",
+        });
+      }
     },
-    deleteLike() {
+    async deleteLike() {
+      try {
+        const { data } = await usersAPI.deleteLike({
+          restaurantId: this.restaurant.id,
+        });
+
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+
+        this.restaurant = {
+          ...this.restaurant,
+          isLiked: false,
+        };
+      } catch (error) {
+        console.log("error", error);
+        Toast.fire({
+          icon: "error",
+          title: "無法移除餐廳的讚，稍後再試",
+        });
+      }
       this.restaurant = {
         ...this.restaurant,
         isLiked: false,
