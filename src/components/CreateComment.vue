@@ -48,18 +48,12 @@ export default {
           text: this.text,
           restaurantId: this.restaurantId,
         };
-        console.log("comment obj", commentObj);
 
-        const response = await commentsAPI.create(commentObj);
-        console.log("comment response", response);
-
-        const { data } = response;
+        const { data } = await commentsAPI.create(commentObj);
 
         if (data.status !== "success") {
           throw new Error(data.message);
         }
-
-        console.log("handle submit");
 
         this.$emit("after-create-comment", {
           commentId: data.commentId,

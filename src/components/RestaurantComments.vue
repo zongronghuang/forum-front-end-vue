@@ -9,12 +9,19 @@
           class="btn btn-danger float-right"
           v-if="currentUser.isAdmin"
           @click.stop.prevent="handleDeleteButtonClick(comment.id)"
-        >Delete</button>
+        >
+          Delete
+        </button>
         <h3>
-          <router-link :to="{name: 'user', params: {id: comment.User.id}} ">{{comment.User.name}}</router-link>
+          <router-link
+            :to="{ name: 'user', params: { id: comment.User.id } }"
+            >{{ comment.User.name }}</router-link
+          >
         </h3>
-        <p>{{comment.text}}</p>
-        <footer class="blockquote-footer">{{comment.createdAt | fromNow}}</footer>
+        <p>{{ comment.text }}</p>
+        <footer class="blockquote-footer">
+          {{ comment.createdAt | fromNow }}
+        </footer>
       </blockquote>
       <hr />
     </div>
@@ -23,17 +30,9 @@
 
 <script>
 import { fromNowFilter } from "./../utils/mixins.js";
-
-const dummyUser = {
-  currentUser: {
-    id: 1,
-    name: "管理者",
-    email: "root@example.com",
-    image: "https://i.pravatar.cc/300",
-    isAdmin: true,
-  },
-  isAuthenticated: true,
-};
+import commentsAPI from "../apis/comments.js";
+import { Toast } from "../utils/helpers.js";
+import { mapState } from "vuex";
 
 export default {
   mixins: [fromNowFilter],
@@ -43,14 +42,26 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {
-      currentUser: dummyUser.currentUser,
-    };
+  computed: {
+    ...mapState(["currentUser"]),
   },
   methods: {
-    handleDeleteButtonClick(commentId) {
-      this.$emit("after-delete-comment", commentId);
+    async handleDeleteButtonClick(commentId) {
+      try {
+        const { data } = await commentsAPI.delete({ commentId });
+
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+
+        this.$emit("after-delete-comment", commentId);
+      } catch (error) {
+        console.log("error", error);
+        Toast.fire({
+          icon: "error",
+          title: "無法刪除評論，稍後再試",
+        });
+      }
     },
   },
 };

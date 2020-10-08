@@ -58,6 +58,9 @@ export default {
     this.fetchRestaurant(restaurantId);
     next();
   },
+  computed: {
+    ...mapState(["currentUser"]),
+  },
   methods: {
     async fetchRestaurant(restaurantId) {
       try {
@@ -122,9 +125,6 @@ export default {
         createdAt: new Date(),
       });
     },
-  },
-  computed: {
-    ...mapState(["currentUser"]),
   },
 };
 </script>
