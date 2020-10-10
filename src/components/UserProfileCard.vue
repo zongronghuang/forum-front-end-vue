@@ -6,44 +6,52 @@
       </div>
       <div class="col-md-8">
         <div class="card-body">
-          <h5 class="card-title">{{profile.name}}</h5>
-          <p class="card-text">{{profile.email}}</p>
+          <h5 class="card-title">{{ profile.name }}</h5>
+          <p class="card-text">{{ profile.email }}</p>
           <ul class="list-unstyled list-inline">
             <li>
-              <strong>{{profile.Comments.length}}</strong> 已評論餐廳
+              <strong>{{ profile.Comments.length }}</strong> 已評論餐廳
             </li>
             <li>
-              <strong>{{profile.FavoritedRestaurants.length}}</strong> 收藏的餐廳
+              <strong>{{ profile.FavoritedRestaurants.length }}</strong>
+              收藏的餐廳
             </li>
             <li>
-              <strong>{{userProfile.Followings.length}}</strong> followings (追蹤者)
+              <strong>{{ userProfile.Followings.length }}</strong> followings
+              (追蹤者)
             </li>
             <li>
-              <strong>{{userProfile.Followers.length}}</strong> followers (追隨者)
+              <strong>{{ userProfile.Followers.length }}</strong> followers
+              (追隨者)
             </li>
           </ul>
           <p></p>
-          <form action method="GET" style="display: contents;">
+          <form action method="GET" style="display: contents">
             <router-link
-              :to="{name: 'user-edit', params: {id: profile.id}}"
+              :to="{ name: 'user-edit', params: { id: profile.id } }"
               type="submit"
               class="btn btn-primary"
               v-if="profile.id === currentViewingUser.id"
-            >編輯</router-link>
+              >編輯</router-link
+            >
 
             <div v-else>
               <button
                 type="submit"
                 class="btn btn-danger"
-                v-if="profile.isFollowed"
-                @click.stop.prevent="unfollowUser"
-              >取消追蹤</button>
+                v-if="this.isFollowed"
+                @click.stop.prevent="unfollowUser(profile.id)"
+              >
+                取消追蹤
+              </button>
               <button
                 type="submit"
                 class="btn btn-primary"
                 v-else
-                @click.stop.prevent="followUser"
-              >追蹤</button>
+                @click.stop.prevent="followUser(profile.id)"
+              >
+                追蹤
+              </button>
             </div>
           </form>
           <p></p>
@@ -55,6 +63,8 @@
 
 <script>
 import { emptyImageFilter } from "../utils/mixins.js";
+import usersAPI from "../apis/users.js";
+import { Toast } from "../utils/helpers.js";
 
 export default {
   name: "UserProfileCard",
@@ -68,16 +78,32 @@ export default {
       type: Object,
       required: true,
     },
+    initialIsFollowed: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
       profile: {},
       currentViewingUser: {},
+      isFollowed: this.initialIsFollowed,
     };
   },
   created() {
     this.getProfileData();
     this.getUserData();
+  },
+  watch: {
+    userProfile(newValue) {
+      this.profile = {
+        ...this.profile,
+        ...newValue,
+      };
+    },
+    initialIsFollowed(isFollowed) {
+      this.isFollowed = isFollowed;
+    },
   },
   methods: {
     getProfileData() {
@@ -90,21 +116,41 @@ export default {
         ...this.currentUser,
       };
     },
-    followUser() {
-      this.profile = {
-        ...this.profile,
-        isFollowed: true,
-      };
+    async followUser(userId) {
+      try {
+        const { data } = await usersAPI.addFollowing({ userId });
 
-      this.$emit("after-follow");
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+
+        (this.isFollowed = true), this.$emit("after-follow");
+      } catch (error) {
+        console.log("error", error);
+        Toast.fire({
+          icon: "error",
+          title: "無法追蹤使用者，稍後再試",
+        });
+      }
     },
-    unfollowUser() {
-      this.profile = {
-        ...this.profile,
-        isFollowed: false,
-      };
+    async unfollowUser(userId) {
+      try {
+        const { data } = await usersAPI.deleteFollowing({ userId });
 
-      this.$emit("after-unfollow");
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+
+        this.isFollowed = false;
+
+        this.$emit("after-unfollow");
+      } catch (error) {
+        console.log("error", error);
+        Toast.fire({
+          icon: "error",
+          title: "無法取消追蹤，稍後再試",
+        });
+      }
     },
   },
 };

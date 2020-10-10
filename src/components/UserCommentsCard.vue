@@ -1,15 +1,20 @@
 <template>
   <div class="card">
     <div class="card-header">
-      <strong>{{comments.length}}</strong> 已評論餐廳
+      <strong>{{ userComments.length }}</strong> 已評論餐廳
     </div>
     <div class="card-body">
       <router-link
-        :to="{name: 'restaurant', params: {id: comment.Restaurant.id}} "
+        :to="{ name: 'restaurant', params: { id: comment.Restaurant.id } }"
         v-for="comment in comments"
         :key="comment.id"
       >
-        <img :src="comment.Restaurant.image | emptyImage" width="60" height="60" class="avatar" />
+        <img
+          :src="comment.Restaurant.image | emptyImage"
+          width="60"
+          height="60"
+          class="avatar"
+        />
       </router-link>
     </div>
   </div>
@@ -34,6 +39,14 @@ export default {
   },
   created() {
     this.fetchComments();
+  },
+  watch: {
+    userComments(newValue) {
+      this.comments = {
+        ...this.comments,
+        ...newValue,
+      };
+    },
   },
   methods: {
     fetchComments() {
