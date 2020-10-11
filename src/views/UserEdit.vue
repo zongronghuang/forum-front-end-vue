@@ -29,24 +29,18 @@
         />
       </div>
 
-      <button type="submit" class="btn btn-primary">Submit</button>
+      <button type="submit" class="btn btn-primary" :disabled="isProcessing">
+        {{ isProcessing ? "處理中" : "Submit" }}
+      </button>
     </form>
   </div>
 </template>
 
 <script>
 import { emptyImageFilter } from "../utils/mixins.js";
-
-const dummyUser = {
-  currentUser: {
-    id: 1,
-    name: "管理者",
-    email: "root@example.com",
-    image: "https://i.pravatar.cc/300",
-    isAdmin: true,
-  },
-  isAuthenticated: true,
-};
+import { mapState } from "vuex";
+import usersAPI from "../apis/users.js";
+import { Toast } from "../utils/helpers.js";
 
 export default {
   name: "user-edit",
@@ -54,14 +48,40 @@ export default {
   data() {
     return {
       user: {},
+      isProcessing: false,
     };
   },
   created() {
-    this.fetchUser();
+    const { id } = this.$route.params;
+
+    if (Number(id) !== Number(this.currentUser.id)) {
+      return this.$router.push({ name: "not-found" });
+    }
+
+    this.setUser();
+  },
+  beforeRouteUpdate(to, from, next) {
+    const { id } = to.params;
+
+    if (Number(id) !== Number(this.currentUser.id)) {
+      return this.$router.push({ name: "not-found" });
+    }
+
+    this.setUser();
+    next();
+  },
+  computed: {
+    ...mapState(["currentUser"]),
+  },
+  watch: {
+    currentUser(newValue) {
+      this.setUser();
+      console.log(newValue);
+    },
   },
   methods: {
-    fetchUser() {
-      this.user = { ...dummyUser.currentUser };
+    setUser() {
+      this.user = { ...this.currentUser };
     },
     handleFileChange(e) {
       const { files } = e.target;
@@ -74,12 +94,44 @@ export default {
         this.user.image = imageURL;
       }
     },
-    handleSubmit(e) {
-      const form = e.target;
-      const formData = new FormData(form);
+    async handleSubmit(e) {
+      try {
+        this.isProcessing = true;
+        if (!this.user.name.trim()) {
+          this.isProcessing = false;
+          return Toast.fire({
+            icon: "error",
+            title: "名稱不可為空白",
+          });
+        }
 
-      for (let [name, value] of formData.entries()) {
-        console.log(name, value);
+        const form = e.target;
+        const formData = new FormData(form);
+        const { data } = await usersAPI.update({
+          userId: this.currentUser.id,
+          formData,
+        });
+        console.log("update data", data);
+
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+
+        this.$router.push({
+          name: "user",
+          params: { id: this.currentUser.id },
+        });
+
+        for (let [name, value] of formData.entries()) {
+          console.log(name + ": " + value);
+        }
+      } catch (error) {
+        this.isProcessing = false;
+        console.log("error", error);
+        Toast.fire({
+          icon: "error",
+          title: "無法更新使用者資料",
+        });
       }
     },
   },
