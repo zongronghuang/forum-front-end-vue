@@ -61,8 +61,6 @@ export default {
       try {
         const { data } = await adminAPI.restaurants.get();
 
-        console.log("get data", data);
-
         this.restaurants = data.restaurants;
       } catch (error) {
         console.log("error", error);
