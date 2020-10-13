@@ -1,17 +1,20 @@
 <template>
   <div class="container py-5">
     <NavTabs />
-    <h1 class="mt-5">最新動態</h1>
-    <hr />
-    <div class="row">
-      <div class="col-6">
-        <NewestRestaurants :new-restaurants="restaurants" />
-      </div>
+    <Spinner v-if="isLoading" />
+    <template v-else>
+      <h1 class="mt-5">最新動態</h1>
+      <hr />
+      <div class="row">
+        <div class="col-6">
+          <NewestRestaurants :new-restaurants="restaurants" />
+        </div>
 
-      <div class="col-6">
-        <NewestComments :new-comments="comments" />
+        <div class="col-6">
+          <NewestComments :new-comments="comments" />
+        </div>
       </div>
-    </div>
+    </template>
   </div>
 </template>
 
@@ -21,6 +24,7 @@ import NewestRestaurants from "../components/NewestRestaurants.vue";
 import NewestComments from "../components/NewestComments.vue";
 import restaurantsAPI from "../apis/restaurants.js";
 import { Toast } from "../utils/helpers.js";
+import Spinner from "../components/Spinner.vue";
 
 export default {
   name: "RestaurantsFeeds",
@@ -28,11 +32,13 @@ export default {
     NavTabs,
     NewestRestaurants,
     NewestComments,
+    Spinner,
   },
   data() {
     return {
       restaurants: [],
       comments: [],
+      isLoading: true,
     };
   },
   created() {
@@ -51,7 +57,9 @@ export default {
 
         this.restaurants = restaurants;
         this.comments = comments;
+        this.isLoading = false;
       } catch (error) {
+        this.isLoading = false;
         console.log("error", error);
 
         Toast.fire({
