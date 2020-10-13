@@ -22,7 +22,7 @@
                 type="button"
                 class="btn btn-link"
                 v-if="user.isAdmin"
-                @click.stop.prevent="toggleUserRole(user.id)"
+                @click.stop.prevent="toggleUserRole(user.id, user.isAdmin)"
               >
                 Set as user
               </button>
@@ -73,6 +73,9 @@ export default {
           throw new Error();
         }
 
+        console.log("role data", data);
+        console.log("current user", this.currentUser);
+
         this.users = data.users;
       } catch (error) {
         console.log("error", error);
@@ -85,6 +88,7 @@ export default {
     async toggleUserRole(userId, isAdmin) {
       try {
         const newRole = !isAdmin;
+        console.log("new role", newRole, "isAdmin", isAdmin);
 
         const { data } = await adminAPI.users.update({
           userId,
