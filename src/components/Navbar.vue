@@ -44,6 +44,24 @@
   </nav>
 </template>
 
+<style scoped>
+.navbar-toggler {
+  min-width: 70px;
+  margin-right: 0;
+}
+
+nav.bg-dark {
+  padding: 14px 16px;
+  background-color: #bd2333 !important;
+}
+
+.navbar-brand {
+  font-size: 19px;
+  padding: 0;
+}
+</style>
+
+
 <script>
 import { mapState } from "vuex";
 
@@ -60,6 +78,3 @@ export default {
   },
 };
 </script>
-
-<style>
-</style>
