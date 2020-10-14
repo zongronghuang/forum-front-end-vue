@@ -21,7 +21,10 @@
         </div>
       </div>
     </form>
-    <table class="table">
+
+    <Spinner v-if="isLoading" />
+
+    <table v-else class="table">
       <thead class="thead-dark">
         <tr>
           <th scope="col" width="60">#</th>
@@ -89,17 +92,20 @@
 import AdminNav from "@/components/AdminNav";
 import adminAPI from "../apis/admin.js";
 import { Toast } from "../utils/helpers.js";
+import Spinner from "../components/Spinner.vue";
 
 export default {
   name: "AdminCategories",
   components: {
     AdminNav,
+    Spinner,
   },
   data() {
     return {
       newCategoryName: "",
       categories: [],
       isProcessing: false,
+      isLoading: true,
     };
   },
   created() {
@@ -116,7 +122,11 @@ export default {
           isEditing: false,
           nameCached: "",
         }));
+
+        this.isLoadig = false;
       } catch (error) {
+        this.isLoading = false;
+
         console.log("error", error);
 
         Toast.fire({

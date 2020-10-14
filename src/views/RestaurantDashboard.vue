@@ -1,5 +1,6 @@
 <template>
-  <div class="container py-5">
+  <Spinner v-if="isLoading" />
+  <div v-else class="container py-5">
     <div>
       <h1>{{ restaurant.name }}</h1>
       <span class="badge badge-secondary mt-1 mb-3">{{
@@ -17,18 +18,25 @@
     <button type="button" class="btn btn-link" @click="$router.back()">
       回上一頁
     </button>
+
+    <a href="#" @click="$router.back()">回上一頁</a>
   </div>
 </template>
 
 <script>
 import restaurantsAPI from "../apis/restaurants.js";
 import { Toast } from "../utils/helpers.js";
+import Spinner from "../components/Spinner.vue";
 
 export default {
   name: "RestaurantDashboard",
+  components: {
+    Spinner,
+  },
   data() {
     return {
       restaurant: {},
+      isLoading: true,
     };
   },
   created() {
@@ -52,7 +60,9 @@ export default {
         }
 
         this.restaurant = data.restaurant;
+        this.isLoading = false;
       } catch (error) {
+        this.isLoading = false;
         console.log("error", error);
         Toast.fire({
           icon: "error",

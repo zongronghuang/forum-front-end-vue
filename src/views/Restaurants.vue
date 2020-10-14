@@ -4,20 +4,27 @@
     <h1 class="mt-5">首頁 - 餐廳列表</h1>
 
     <RestaurantsNavPills :categories="categories" />
-    <RestaurantCard
-      v-for="restaurant in restaurants"
-      :key="restaurant.id"
-      :initial-restaurant="restaurant"
-    />
 
-    <RestaurantsPagination
-      v-if="totalPage.length > 1"
-      :current-page="currentPage"
-      :total-page="totalPage"
-      :category-id="categoryId"
-      :previous-page="prev"
-      :next-page="next"
-    />
+    <Spinner v-if="isLoading" />
+
+    <template v-else>
+      <div class="row">
+        <RestaurantCard
+          v-for="restaurant in restaurants"
+          :key="restaurant.id"
+          :initial-restaurant="restaurant"
+        />
+      </div>
+
+      <RestaurantsPagination
+        v-if="totalPage.length > 1"
+        :current-page="currentPage"
+        :total-page="totalPage"
+        :category-id="categoryId"
+        :previous-page="prev"
+        :next-page="next"
+      />
+    </template>
   </div>
 </template>
 
@@ -26,6 +33,7 @@ import NavTabs from "../components/NavTabs.vue";
 import RestaurantCard from "../components/RestaurantCard.vue";
 import RestaurantsNavPills from "../components/RestaurantsNavPills.vue";
 import RestaurantsPagination from "../components/RestaurantsPagination.vue";
+import Spinner from "../components/Spinner.vue";
 import restaurantsAPI from "../apis/restaurants.js";
 import { Toast } from "../utils/helpers.js";
 
@@ -36,6 +44,7 @@ export default {
     RestaurantCard,
     RestaurantsNavPills,
     RestaurantsPagination,
+    Spinner,
   },
   data() {
     return {
@@ -46,6 +55,7 @@ export default {
       totalPage: [],
       prev: -1,
       next: -1,
+      isLoading: true,
     };
   },
   created() {
@@ -89,7 +99,11 @@ export default {
         this.totalPage = totalPage;
         this.prev = prev;
         this.next = next;
+
+        this.isLoading = false;
       } catch (error) {
+        this.isLoading = false;
+
         console.log("error", error);
 
         Toast.fire({

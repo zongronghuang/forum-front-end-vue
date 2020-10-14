@@ -1,5 +1,6 @@
 <template>
-  <table class="table">
+  <Spinner v-if="isLoading" />
+  <table v-else class="table">
     <thead class="thead-dark">
       <tr>
         <th scope="col">#</th>
@@ -45,12 +46,17 @@
 <script>
 import adminAPI from "../apis/admin.js";
 import { Toast } from "../utils/helpers.js";
+import Spinner from "./Spinner.vue";
 
 export default {
   name: "AdminRestaurantsTable",
+  components: {
+    Spinner,
+  },
   data() {
     return {
       restaurants: [],
+      isLoading: true,
     };
   },
   created() {
@@ -62,7 +68,10 @@ export default {
         const { data } = await adminAPI.restaurants.get();
 
         this.restaurants = data.restaurants;
+        this.isLoading = false;
       } catch (error) {
+        this.isLoading = false;
+
         console.log("error", error);
 
         Toast.fire({

@@ -1,19 +1,23 @@
 <template>
   <div class="container py-5">
     <h1>餐廳描述頁</h1>
-    <!-- 餐廳資訊頁 RestaurantDetail -->
-    <RestaurantDetail :initial-restaurant="restaurant" />
-    <hr />
-    <!-- 餐廳評論 RestaurantComments -->
-    <RestaurantComments
-      :restaurant-comments="restaurantComments"
-      @after-delete-comment="afterDeleteComment"
-    />
-    <!-- 新增評論 CreateComment -->
-    <CreateComment
-      :restaurant-id="restaurant.id"
-      @after-create-comment="afterCreateComment"
-    />
+
+    <Spinner v-if="isLoading" />
+    <template v-else>
+      <!-- 餐廳資訊頁 RestaurantDetail -->
+      <RestaurantDetail :initial-restaurant="restaurant" />
+      <hr />
+      <!-- 餐廳評論 RestaurantComments -->
+      <RestaurantComments
+        :restaurant-comments="restaurantComments"
+        @after-delete-comment="afterDeleteComment"
+      />
+      <!-- 新增評論 CreateComment -->
+      <CreateComment
+        :restaurant-id="restaurant.id"
+        @after-create-comment="afterCreateComment"
+      />
+    </template>
   </div>
 </template>
 
@@ -21,6 +25,7 @@
 import RestaurantDetail from "../components/RestaurantDetail.vue";
 import RestaurantComments from "../components/RestaurantComments.vue";
 import CreateComment from "../components/CreateComment.vue";
+import Spinner from "../components/Spinner.vue";
 import restaurantsAPI from "../apis/restaurants.js";
 import { Toast } from "../utils/helpers.js";
 import { mapState } from "vuex";
@@ -41,12 +46,14 @@ export default {
         isLiked: false,
       },
       restaurantComments: [],
+      isLoading: true,
     };
   },
   components: {
     RestaurantDetail,
     RestaurantComments,
     CreateComment,
+    Spinner,
   },
   created() {
     const { id: restaurantId } = this.$route.params;
@@ -99,7 +106,9 @@ export default {
         };
 
         this.restaurantComments = Comments;
+        this.isLoading = false;
       } catch (error) {
+        this.isLoading = false;
         console.log("error", error);
         Toast.fire({
           icon: "error",

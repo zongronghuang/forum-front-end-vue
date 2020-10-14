@@ -1,117 +1,131 @@
 <template>
-  <form v-show="!isLoading" @submit.stop.prevent="handleSubmit">
-    <div class="form-group">
-      <label for="name">Name</label>
-      <input
-        id="name"
-        v-model="restaurant.name"
-        type="text"
-        class="form-control"
-        name="name"
-        placeholder="Enter name"
-        required
-      />
-    </div>
+  <div>
+    <Spinner v-if="isLoading" />
+    <form v-show="!isLoading" @submit.stop.prevent="handleSubmit">
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input
+          id="name"
+          v-model="restaurant.name"
+          type="text"
+          class="form-control"
+          name="name"
+          placeholder="Enter name"
+          required
+        />
+      </div>
 
-    <div class="form-group">
-      <label for="categoryId">Category</label>
-      <select
-        id="categoryId"
-        class="form-control"
-        name="categoryId"
-        required
-        v-model="restaurant.categoryId"
-      >
-        <option value selected disabled>--請選擇--</option>
-        <option
-          v-for="category in categories"
-          :key="category.id"
-          :value="category.id"
+      <div class="form-group">
+        <label for="categoryId">Category</label>
+        <select
+          id="categoryId"
+          class="form-control"
+          name="categoryId"
+          required
+          v-model="restaurant.categoryId"
         >
-          {{ category.name }}
-        </option>
-      </select>
-    </div>
+          <option value selected disabled>--請選擇--</option>
+          <option
+            v-for="category in categories"
+            :key="category.id"
+            :value="category.id"
+          >
+            {{ category.name }}
+          </option>
+        </select>
+      </div>
 
-    <div class="form-group">
-      <label for="tel">Tel</label>
-      <input
-        id="tel"
-        v-model="restaurant.tel"
-        type="text"
-        class="form-control"
-        name="tel"
-        placeholder="Enter telephone number"
-      />
-    </div>
+      <div class="form-group">
+        <label for="tel">Tel</label>
+        <input
+          id="tel"
+          v-model="restaurant.tel"
+          type="text"
+          class="form-control"
+          name="tel"
+          placeholder="Enter telephone number"
+        />
+      </div>
 
-    <div class="form-group">
-      <label for="address">Address</label>
-      <input
-        id="address"
-        v-model="restaurant.address"
-        type="text"
-        class="form-control"
-        placeholder="Enter address"
-        name="address"
-      />
-    </div>
+      <div class="form-group">
+        <label for="address">Address</label>
+        <input
+          id="address"
+          v-model="restaurant.address"
+          type="text"
+          class="form-control"
+          placeholder="Enter address"
+          name="address"
+        />
+      </div>
 
-    <div class="form-group">
-      <label for="opening-hours">Opening Hours</label>
-      <input
-        id="opening-hours"
-        type="time"
-        class="form-control"
-        name="opening_hours"
-        v-model="restaurant.openingHours"
-      />
-    </div>
+      <div class="form-group">
+        <label for="opening-hours">Opening Hours</label>
+        <input
+          id="opening-hours"
+          type="time"
+          class="form-control"
+          name="opening_hours"
+          v-model="restaurant.openingHours"
+        />
+      </div>
 
-    <div class="form-group">
-      <label for="description">Description</label>
-      <textarea
-        id="description"
-        class="form-control"
-        rows="3"
-        name="description"
-        v-model="restaurant.description"
-      />
-    </div>
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea
+          id="description"
+          class="form-control"
+          rows="3"
+          name="description"
+          v-model="restaurant.description"
+        />
+      </div>
 
-    <div class="form-group">
-      <label for="image">Image</label>
-      <img
-        v-if="restaurant.image"
-        :src="restaurant.image | emptyImage"
-        class="d-block img-thumbnail mb-3"
-        width="200"
-        height="200"
-      />
+      <div class="form-group">
+        <label for="image">Image</label>
+        <img
+          v-if="restaurant.image"
+          :src="restaurant.image | emptyImage"
+          class="d-block img-thumbnail mb-3"
+          width="200"
+          height="200"
+        />
 
-      <input
-        id="image"
-        type="file"
-        name="image"
-        accept="image/*"
-        class="form-control-file"
-        @change="handleFileChange"
-      />
-    </div>
+        <input
+          id="image"
+          type="file"
+          name="image"
+          accept="image/*"
+          class="form-control-file"
+          @change="handleFileChange"
+        />
+      </div>
 
-    <button type="submit" class="btn btn-primary" :disabled="isProcessing">
-      {{ isProcessing ? "處理中" : "送出" }}
-    </button>
-  </form>
+      <div class="d-flex align-items-center justify-content-between">
+        <a href="#" class="mr-4" @click="$router.back()">回上一頁</a>
+        <button
+          type="submit"
+          class="btn btn-primary ml-auto"
+          :disabled="isProcessing"
+        >
+          {{ isProcessing ? "處理中..." : "送出" }}
+        </button>
+      </div>
+    </form>
+  </div>
 </template>
 
 <script>
 import { emptyImageFilter } from "../utils/mixins.js";
 import adminAPI from "../apis/admin.js";
 import { Toast } from "../utils/helpers.js";
+import Spinner from "./Spinner.vue";
 
 export default {
   mixins: [emptyImageFilter],
+  components: {
+    Spinner,
+  },
   data() {
     return {
       restaurant: {

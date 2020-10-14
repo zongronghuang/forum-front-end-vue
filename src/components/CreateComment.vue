@@ -5,9 +5,7 @@
       <textarea class="form-control" rows="3" name="text" v-model="text" />
     </div>
     <div class="d-flex align-items-center justify-content-between">
-      <button type="button" class="btn btn-link" @click="$router.back()">
-        回上一頁
-      </button>
+      <a href="#" @click="$router.back()">回上一頁</a>
       <button type="submit" class="btn btn-primary mr-0">Submit</button>
     </div>
   </form>
