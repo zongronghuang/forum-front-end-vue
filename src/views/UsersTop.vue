@@ -1,43 +1,48 @@
 <template>
   <div class="container py-5">
     <NavTabs />
-    <h1 class="mt-5">美食達人</h1>
-    <hr />
-    <div class="row text-center">
-      <div class="col-3" v-for="user in users" :key="user.id">
-        <a href="#">
-          <img :src="user.image | emptyImage" width="140px" height="140px" />
-        </a>
-        <h2>{{ user.name }}</h2>
-        <span class="badge badge-secondary"
-          >追蹤人數：{{ user.followerCount }}</span
-        >
-        <p class="mt-3">
-          <button
-            type="button"
-            class="btn btn-danger"
-            v-if="user.isFollowed"
-            @click.prevent.stop="deleteFollowing(user.id)"
+
+    <Spinner v-if="isLoading" />
+    <template v-else>
+      <h1 class="mt-5">美食達人</h1>
+      <hr />
+      <div class="row text-center">
+        <div class="col-3" v-for="user in users" :key="user.id">
+          <a href="#">
+            <img :src="user.image | emptyImage" width="140px" height="140px" />
+          </a>
+          <h2>{{ user.name }}</h2>
+          <span class="badge badge-secondary"
+            >追蹤人數：{{ user.followerCount }}</span
           >
-            取消追蹤
-          </button>
-          <button
-            type="button"
-            class="btn btn-primary"
-            v-else
-            @click.prevent.stop="addFollowing(user.id)"
-          >
-            追蹤
-          </button>
-        </p>
+          <p class="mt-3">
+            <button
+              type="button"
+              class="btn btn-danger"
+              v-if="user.isFollowed"
+              @click.prevent.stop="deleteFollowing(user.id)"
+            >
+              取消追蹤
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              v-else
+              @click.prevent.stop="addFollowing(user.id)"
+            >
+              追蹤
+            </button>
+          </p>
+        </div>
       </div>
-    </div>
+    </template>
   </div>
 </template>
 
 <script>
 import { emptyImageFilter } from "../utils/mixins.js";
 import NavTabs from "../components/NavTabs.vue";
+import Spinner from "../components/Spinner.vue";
 import usersAPI from "../apis/users.js";
 import { Toast } from "../utils/helpers.js";
 
@@ -46,10 +51,12 @@ export default {
   mixins: [emptyImageFilter],
   components: {
     NavTabs,
+    Spinner,
   },
   data() {
     return {
       users: [],
+      isLoading: true,
     };
   },
   methods: {
@@ -64,7 +71,11 @@ export default {
           followerCount: user.FollowerCount,
           isFollowed: user.isFollowed,
         }));
+
+        this.isLoading = false;
       } catch (error) {
+        this.isLoading = false;
+
         console.log("error", error);
 
         Toast.fire({

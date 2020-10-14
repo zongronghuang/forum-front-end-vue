@@ -15,10 +15,6 @@
       <li>瀏覽次數： {{ restaurant.viewCounts }}</li>
     </ul>
 
-    <button type="button" class="btn btn-link" @click="$router.back()">
-      回上一頁
-    </button>
-
     <a href="#" @click="$router.back()">回上一頁</a>
   </div>
 </template>
