@@ -39,6 +39,8 @@
           </td>
         </tr>
       </tbody>
+
+      <div v-if="users.length < 1">目前沒有使用者</div>
     </table>
   </div>
 </template>

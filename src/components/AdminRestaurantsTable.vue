@@ -40,6 +40,8 @@
         </td>
       </tr>
     </tbody>
+
+    <div v-if="restaurants.length < 1">目前沒有餐廳</div>
   </table>
 </template>
 

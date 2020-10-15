@@ -16,6 +16,8 @@
         <hr />
       </div>
     </div>
+
+    <div v-if="newRestaurants.length < 1">目前沒有餐廳</div>
   </div>
 </template>
 

@@ -18,6 +18,8 @@
         <hr />
       </div>
     </div>
+
+    <div v-if="filteredComments.length < 1">目前沒有評論</div>
   </div>
 </template>
 
