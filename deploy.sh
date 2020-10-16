@@ -22,10 +22,10 @@ git commit -m 'deploy'
 # if you are deploying to https://<USERNAME>.github.io/<REPO>
 # git push -f git@github.com:<USERNAME>/<REPO>.git master:gh-pages
 
-# Deploy your app via SSH
+# Deploy your app to GitHub Pages via SSH
 # git push -f git@github.com:<USERNAME>/<REPO>.git master:gh-pages
 
-# Deploy your app via HTTPS
+# Deploy your app to GitHub Pages via HTTPS
 # git push -f https://github.com/<USERNAME>/<REPO>.git master:gh-pages
 git push -f https://github.com/zongronghuang/forum-front-end-vue.git master:gh-pages
 
